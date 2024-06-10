@@ -4,21 +4,37 @@ import { Request, Response } from 'express'; // typescript
 import bcrypt from "bcrypt";
 
 
+interface Query {
+  limit?: string;
+  sort?: string; // TODO - välj mellan valbara keys
+  order?: 'asc' | 'desc'
+}
+
 /**
  * @description Get all users
  * @route GET /users
  */
-export async function getUsers(req: Request, res: Response) {
+export async function getUsers(req: Request<{}, {}, {}, Query>, res: Response) {
 
-  const { limit, sort } = req.query
+  //api/users/?limit=21&sort=username&order=asc
+  // limit - pagination - default 10
+  // sort - vad som man kan sorteras på - default "id"
+  // order - stigande eller fallande - default "asc"
+  const limit: number = req.query.limit ? parseInt(req.query.limit) : 10;
+  const sortField = req.query.sort || 'id';
+  const sortOrder = req.query.order || 'asc'
 
-  console.log("Limit", limit, "Sort", sort)
+  const sort = {[sortField]: sortOrder}
+
+
+  console.log("Limit", limit, "SortField", sortField, "SortOrder", sortOrder)
 
   // use prisma to get all users with error handling
   try {
     const users = await prisma.user.findMany({
-
-    });
+      take: limit, // Pagination, hur mycke tper request
+      orderBy: sort // Sorterar på viss key och och stigande eller fallende ordning
+     });
 
     // if no users are found, return a 404 error
     if (!users.length)
