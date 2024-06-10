@@ -3,21 +3,22 @@ import { PrismaClient, Prisma } from '@prisma/client';
 import { Request, Response } from 'express'; // typescript
 import bcrypt from "bcrypt";
 
-interface Query {
-  limit?: string;
-  sort?: string;
-  order?: 'asc' | 'desc';
-}
+
 /**
  * @description Get all users
  * @route GET /users
  */
 export async function getUsers(req: Request, res: Response) {
 
+  const { limit, sort } = req.query
+
+  console.log("Limit", limit, "Sort", sort)
 
   // use prisma to get all users with error handling
   try {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+
+    });
 
     // if no users are found, return a 404 error
     if (!users.length)
