@@ -24,7 +24,7 @@ export async function getUsers(req: Request<{}, {}, {}, Query>, res: Response) {
   const sortField = req.query.sort || 'id';
   const sortOrder = req.query.order || 'asc'
 
-  const sort = {[sortField]: sortOrder}
+  const sort = {[sortField]: sortOrder} 
 
 
   console.log("Limit", limit, "SortField", sortField, "SortOrder", sortOrder)
